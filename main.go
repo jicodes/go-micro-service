@@ -1,24 +1,17 @@
 package main
 
 import (
-	"net/http"
+	"context"
+	"fmt"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/jicodes/go-micro-service/application"
 )
 
-const PORT = ":8080"
-
-func basicHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, world!\n"))
-}
-
 func main() {
-	router := chi.NewRouter()
-	
-	router.Use(middleware.Logger)
+	app := application.New()
 
-	router.Get("/hello", basicHandler)
-	
-	http.ListenAndServe(PORT, router)
+	err := app.Start(context.TODO())
+	if err != nil{
+		fmt.Println("failed to start app:", err)
+	}
 }
