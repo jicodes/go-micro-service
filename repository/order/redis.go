@@ -31,7 +31,7 @@ func (r *RedisRepo) Insert(ctx context.Context, order *model.Order) error {
 	err = txn.SetNX(ctx, key, string(data), 0).Err()
 	if err != nil {
 		txn.Discard()
-		return fmt.Errorf("failed to create order: %w", err)
+		return fmt.Errorf("failed to set: %w", err)
 	}
 
 	if err := txn.SAdd(ctx, "orders", key).Err(); err != nil {
@@ -69,7 +69,7 @@ func (r *RedisRepo) FindByID(ctx context.Context, orderID uint64) (model.Order, 
 
 type FindAllPage struct {
 	Size uint64
-	Offset uint64
+	Cursor uint64
 }
 
 type FindResult struct {
@@ -78,7 +78,7 @@ type FindResult struct {
 }
 
 func (r *RedisRepo) FindAll(ctx context.Context, page FindAllPage) (FindResult, error) {
-	res := r.Client.SScan(ctx, "orders", page.Offset, "*", int64(page.Size))
+	res := r.Client.SScan(ctx, "orders", page.Cursor, "*", int64(page.Size))
 
 	keys, cursor, err := res.Result()
 
