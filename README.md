@@ -27,3 +27,10 @@ docker run -d -p 6379:6379 --name redis redis:alpine
   - in the main goroutine, listen for the termination signal and send the signal to the server goroutine.
   - `os/signal` package is used to handle the termination signal.
   - `context` package is used to communicate and handle gracefully shutdown of the server.
+
+## Data model
+
+- Install uuid package for generating unique id.
+```sh
+go get github.com/google/uuid
+``` 
