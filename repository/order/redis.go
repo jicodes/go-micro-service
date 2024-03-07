@@ -18,10 +18,10 @@ func orderIDKey(orderID uint64) string {
 	return fmt.Sprintf("order:%d", orderID)
 }
 
-func (r *RedisRepo) Insert(ctx context.Context, order *model.Order) error {
+func (r *RedisRepo) Insert(ctx context.Context, order model.Order) error {
 	data, err := json.Marshal(order)
 	if err != nil {
-		return fmt.Errorf("failed to marshal order: %w", err)
+		return fmt.Errorf("failed to marshal: %w", err)
 	}
 
 	key := orderIDKey(order.OrderID)
@@ -36,7 +36,7 @@ func (r *RedisRepo) Insert(ctx context.Context, order *model.Order) error {
 
 	if err := txn.SAdd(ctx, "orders", key).Err(); err != nil {
 		txn.Discard()
-		return fmt.Errorf("failed to add order to orders set: %w", err)
+		return fmt.Errorf("failed to add to set: %w", err)
 	}
 
 	if _, err := txn.Exec(ctx); err != nil {
@@ -61,7 +61,7 @@ func (r *RedisRepo) FindByID(ctx context.Context, orderID uint64) (model.Order, 
 	var order model.Order
 	err = json.Unmarshal([]byte(data), &order)
 	if err != nil {
-		return model.Order{}, fmt.Errorf("failed to unmarshal order: %w", err)
+		return model.Order{}, fmt.Errorf("failed to unmarshal: %w", err)
 	}
 
 	return order, nil
