@@ -37,3 +37,7 @@ go get github.com/google/uuid
 ```
 
 ## Add Redis Repository funcs and link with Handlers
+
+## Add configuarations
+- we can use `viper` or `envconfig` package to read configurations from a file.
+- But for this project, we will do it manually.

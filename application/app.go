@@ -13,11 +13,15 @@ type App struct {
 	router http.Handler
 	rdb    *redis.Client
 	server *http.Server
+	config Config
 }
 
-func New() *App {
+func New(config Config) *App {
 	app := &App{
-		rdb:    redis.NewClient(&redis.Options{}),
+		rdb:    redis.NewClient(&redis.Options{
+			Addr: config.RedisAddr,
+		}),
+		config: config,
 	}
 
 	app.loadRoutes()
@@ -37,9 +41,10 @@ func (app *App) Start(ctx context.Context) error {
 		}
 	}()
 
-	fmt.Println("Starting the server on :8080")
+	fmt.Printf("Starting the server on: %d\n", app.config.ServerPort)
+
 	app.server = &http.Server{
-		Addr:    ":8080",
+		Addr:    fmt.Sprintf(":%d", app.config.ServerPort),
 		Handler: app.router,
 	}
 
