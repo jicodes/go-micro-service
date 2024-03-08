@@ -31,6 +31,9 @@ docker run -d -p 6379:6379 --name redis redis:alpine
 ## Data model
 
 - Install uuid package for generating unique id.
+
 ```sh
 go get github.com/google/uuid
-``` 
+```
+
+## Add Redis Repository funcs and link with Handlers

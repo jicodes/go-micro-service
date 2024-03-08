@@ -113,13 +113,13 @@ func (r *RedisRepo) FindAll(ctx context.Context, page FindAllPage) (FindResult, 
 	}, nil
 }
 
-func (r *RedisRepo) UpdateByID(ctx context.Context, orderID uint64, order model.Order) error {
+func (r *RedisRepo) Update(ctx context.Context, order model.Order) error {
 	data, err := json.Marshal(order)
 	if err != nil {
 		return fmt.Errorf("failed to marshal order: %w", err)
 	}
 
-	key := orderIDKey(orderID)
+	key := orderIDKey(order.OrderID)
 
 	err = r.Client.SetXX(ctx, key, string(data), 0).Err()
 	if errors.Is(err, redis.Nil) {
