@@ -28,8 +28,7 @@ func (r *RedisRepo) Insert(ctx context.Context, order model.Order) error {
 
 	txn := r.Client.TxPipeline()
 
-	err = txn.SetNX(ctx, key, string(data), 0).Err()
-	if err != nil {
+	if err := txn.SetNX(ctx, key, string(data), 0).Err(); err != nil {
 		txn.Discard()
 		return fmt.Errorf("failed to set: %w", err)
 	}
